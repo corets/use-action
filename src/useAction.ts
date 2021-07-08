@@ -2,9 +2,9 @@ import { useAsync } from "@corets/use-async"
 import { Action, UseAction } from "./types"
 
 export const useAction: UseAction = <TResult, TActionArgs extends any[]>(
-  action
+  action: Action<TResult, TActionArgs>
 ) => {
-  const handle = useAsync<TResult>()
+  const handle = useAsync<TResult | undefined>()
 
   const run: Action<TResult, TActionArgs> = async (...args) => {
     return handle.reload(() => {
@@ -13,8 +13,8 @@ export const useAction: UseAction = <TResult, TActionArgs extends any[]>(
   }
 
   return {
-    running: handle.loading,
-    errored: handle.errored,
+    isRunning: handle.isLoading,
+    isErrored: handle.isErrored,
     error: handle.error,
     result: handle.result,
     run,

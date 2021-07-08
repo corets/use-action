@@ -33,11 +33,11 @@
     "devrelease": "np prerelease --no-release-draft --tag dev"
   },
   "peerDependencies": {
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0"
+    "react": "^16.0.0 || ^17.0.0",
+    "react-dom": "^16.0.0 || ^17.0.0"
   },
   "dependencies": {
-    "@corets/use-async": "^0.0.1-1"
+    "@corets/use-async": "^0.0.1-6"
   },
   "devDependencies": {
     "@corets/promise-helpers": "^0.0.1-2",
