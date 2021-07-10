@@ -31,14 +31,14 @@
     "build": "rm -rf dist && rollup -c",
     "release": "np --no-release-draft --tag next",
     "preview": "np --no-release-draft --tag dev",
-    "prepublish": "yarn run build"
+    "version": "yarn run build"
   },
   "peerDependencies": {
     "react": "^16.0.0 || ^17.0.0",
     "react-dom": "^16.0.0 || ^17.0.0"
   },
   "dependencies": {
-    "@corets/use-async": "^0.1.0-0"
+    "@corets/use-async": "^0.1.0-1"
   },
   "devDependencies": {
     "@corets/promise-helpers": "^0.1.0-0",
