@@ -1,12 +1,12 @@
 import { useAsync } from "@corets/use-async"
-import { Action, UseAction } from "./types"
+import { ActionProducer, UseAction } from "./types"
 
 export const useAction: UseAction = <TResult, TActionArgs extends any[]>(
-  action: Action<TResult, TActionArgs>
+  action: ActionProducer<TResult, TActionArgs>
 ) => {
   const handle = useAsync<TResult | undefined>()
 
-  const run: Action<TResult, TActionArgs> = async (...args) => {
+  const run: ActionProducer<TResult, TActionArgs> = async (...args) => {
     return handle.reload(() => {
       return action(...args)
     })

@@ -1,15 +1,14 @@
-import { ActionHandle, useAction } from "./"
+import { Action, useAction } from "./"
 import { createPromise } from "@corets/promise-helpers"
-import { mount } from "enzyme"
+import { act, render, screen } from "@testing-library/react"
 import React from "react"
-import { act } from "react-dom/test-utils"
 
 describe("useAction", () => {
   it("calls action and resolves result", async () => {
     const promiseRef = {
       current: createPromise<string>(),
     }
-    let receivedAction: ActionHandle<string, [number, string]>
+    let receivedAction: Action<string, [number, string]>
     let renders = 0
 
     const Test = () => {
@@ -23,15 +22,16 @@ describe("useAction", () => {
       return <h1>{receivedAction.result}</h1>
     }
 
-    const wrapper = mount(<Test />)
-    const target = () => wrapper.find("h1")
+    render(<Test />)
+
+    const target = screen.getByRole("heading")
 
     expect(renders).toBe(1)
     expect(receivedAction!.isRunning).toBe(false)
     expect(receivedAction!.isErrored).toBe(false)
     expect(receivedAction!.error).toBe(undefined)
     expect(receivedAction!.result).toBe(undefined)
-    expect(target().text()).toBe("")
+    expect(target).toHaveTextContent("")
 
     act(() => {
       receivedAction.run(1, "a")
@@ -42,7 +42,7 @@ describe("useAction", () => {
     expect(receivedAction!.isErrored).toBe(false)
     expect(receivedAction!.error).toBe(undefined)
     expect(receivedAction!.result).toBe(undefined)
-    expect(target().text()).toBe("")
+    expect(target).toHaveTextContent("")
 
     await act(async () => {
       await promiseRef.current.resolve("result")
@@ -53,7 +53,7 @@ describe("useAction", () => {
     expect(receivedAction!.isErrored).toBe(false)
     expect(receivedAction!.error).toBe(undefined)
     expect(receivedAction!.result).toBe("result 1 a")
-    expect(target().text()).toBe("result 1 a")
+    expect(target).toHaveTextContent("result 1 a")
 
     act(() => {
       promiseRef.current = createPromise<string>()
@@ -65,7 +65,7 @@ describe("useAction", () => {
     expect(receivedAction!.isErrored).toBe(false)
     expect(receivedAction!.error).toBe(undefined)
     expect(receivedAction!.result).toBe(undefined)
-    expect(target().text()).toBe("")
+    expect(target).toHaveTextContent("")
 
     await act(async () => {
       await promiseRef.current.reject("reason")
@@ -76,6 +76,6 @@ describe("useAction", () => {
     expect(receivedAction!.isErrored).toBe(true)
     expect(receivedAction!.error).toBe("reason")
     expect(receivedAction!.result).toBe(undefined)
-    expect(target().text()).toBe("")
+    expect(target).toHaveTextContent("")
   })
 })
