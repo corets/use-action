@@ -22,7 +22,7 @@
     "/dist"
   ],
   "repository": "github:corets/use-action",
-  "homepage": "https://corets.github.io/use-action",
+  "homepage": "https://docs.corets.io/hooks/use-action",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
