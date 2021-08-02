@@ -1,22 +1,28 @@
-import { useAsync } from "@corets/use-async"
-import { ActionProducer, UseAction } from "./types"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { Async, AsyncProducer, ObservableAsync } from "@corets/async"
+import { UseAction } from "./types"
 
-export const useAction: UseAction = <TResult, TActionArgs extends any[]>(
-  action: ActionProducer<TResult, TActionArgs>
+export const useAction: UseAction = <TResult, TArgs extends any[]>(
+  producer
 ) => {
-  const handle = useAsync<TResult | undefined>()
+  const [reference, setReference] = useState(0)
+  const producerRef = useRef(producer as AsyncProducer<TResult, TArgs>)
 
-  const run: ActionProducer<TResult, TActionArgs> = async (...args) => {
-    return handle.reload(() => {
-      return action(...args)
-    })
-  }
+  const action = useMemo<ObservableAsync<TResult, TArgs>>(() => {
+    if (producer instanceof Async) {
+      return producer
+    }
 
-  return {
-    isRunning: handle.isLoading,
-    isErrored: handle.isErrored,
-    error: handle.error,
-    result: handle.result,
-    run,
-  }
+    return new Async<TResult, TArgs>((...args) => producerRef.current(...args))
+  }, [])
+
+  useEffect(() => {
+    return action.listen(() => setReference((previous) => previous + 1))
+  }, [])
+
+  useEffect(() => {
+    producerRef.current = producer
+  }, [producer])
+
+  return action
 }
